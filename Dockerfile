@@ -1,6 +1,6 @@
 FROM node:23
 
-WORKDIR /workspace/frontend/app
+WORKDIR /app
 
-COPY app/package.json app/package-lock.json /workspace/frontend/app/
+COPY package.json package-lock.json /app/
 RUN npm install

@@ -1,21 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 
-interface CountDownTimerHandle {
-    startTimer: () => void;
-    stopTimer: () => void;
-    resetTimer: (newSeconds: number) => void;
-}
+type CountDownTimerProps = {
+    timerTime: number;
+};
 
-interface CountDownTimerProps {
-    timerRef: React.RefObject<CountDownTimerHandle>;
-}
-
-const CountDownTimer: React.FC<CountDownTimerProps> = ({ timerRef }) => {
+const CountDownTimer = ({ timerTime }: CountDownTimerProps) => {
     const [seconds, setSeconds] = useState(0);
     const [isActive, setIsActive] = useState(false);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-    const startTimer = () => {
+    const handleStart = () => {
         if (!isActive) {
             setIsActive(true);
             intervalRef.current = setInterval(() => {
@@ -32,26 +26,18 @@ const CountDownTimer: React.FC<CountDownTimerProps> = ({ timerRef }) => {
         }
     };
 
-    const stopTimer = () => {
+    const handleStop = () => {
         if (isActive) {
             clearInterval(intervalRef.current!);
             setIsActive(false);
         }
     };
 
-    const resetTimer = (newSeconds: number) => {
+    const handleReset = () => {
         clearInterval(intervalRef.current!);
         setIsActive(false);
-        setSeconds(newSeconds);
+        setSeconds(timerTime);
     };
-
-    useEffect(() => {
-        if (timerRef && timerRef.current) {
-            timerRef.current.startTimer = startTimer;
-            timerRef.current.stopTimer = stopTimer;
-            timerRef.current.resetTimer = resetTimer;
-        }
-    }, [timerRef]);
 
     const formatTime = (totalSeconds: number) => {
         const minutes = Math.floor(totalSeconds / 60);
@@ -60,8 +46,13 @@ const CountDownTimer: React.FC<CountDownTimerProps> = ({ timerRef }) => {
     };
 
     return (
-        <div>
+        <div className="countdown-timer">
             <div>{formatTime(seconds)}</div>
+            <div className="buttons">
+                <button onClick={handleStart}>START</button>
+                <button onClick={handleStop}>STOP</button>
+                <button onClick={handleReset}>RESET</button>
+            </div>
         </div>
     );
 };
